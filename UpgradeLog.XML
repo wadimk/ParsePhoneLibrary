@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type='text/xsl' href='_UpgradeReport_Files/UpgradeReport.xslt'?><UpgradeLog>
+<Properties><Property Name="Solution" Value="ParsePhoneClassLibrary">
+</Property><Property Name="Файл решения" Value="D:\Visual studio 2010\Projects\ParsePhoneClassLibrary\ParsePhoneClassLibrary.sln">
+</Property><Property Name="Файл параметров пользователя" Value="D:\Visual studio 2010\Projects\ParsePhoneClassLibrary\ParsePhoneClassLibrary.suo">
+</Property><Property Name="Date" Value="3 февраля 2011 г.">
+</Property><Property Name="Time" Value="13:46">
+</Property></Properties><Event ErrorLevel="0" Project="" Source="ParsePhoneClassLibrary.sln" Description="Успешно создана резервная копия файла D:\Visual studio 2010\Projects\ParsePhoneClassLibrary\Backup\ParsePhoneClassLibrary.sln">
+</Event><Event ErrorLevel="0" Project="" Source="ParsePhoneClassLibrary.suo" Description="Успешно создана резервная копия файла D:\Visual studio 2010\Projects\ParsePhoneClassLibrary\Backup\ParsePhoneClassLibrary.suo">
+</Event><Event ErrorLevel="0" Project="ParsePhoneLibrary" Source="ParsePhoneClassLibrary\ParsePhoneLibrary.csproj" Description="Успешно создана резервная копия файла проекта: D:\Visual studio 2010\Projects\ParsePhoneClassLibrary\Backup\ParsePhoneClassLibrary\ParsePhoneLibrary.csproj">
+</Event><Event ErrorLevel="0" Project="ParsePhoneLibrary" Source="ParsePhoneClassLibrary\mainClass.cs" Description="Успешно создана резервная копия файла D:\Visual studio 2010\Projects\ParsePhoneClassLibrary\Backup\ParsePhoneClassLibrary\mainClass.cs">
+</Event><Event ErrorLevel="0" Project="ParsePhoneLibrary" Source="ParsePhoneClassLibrary\Properties\AssemblyInfo.cs" Description="Успешно создана резервная копия файла D:\Visual studio 2010\Projects\ParsePhoneClassLibrary\Backup\ParsePhoneClassLibrary\Properties\AssemblyInfo.cs">
+</Event><Event ErrorLevel="0" Project="ParsePhoneLibrary" Source="ParsePhoneClassLibrary\ParsePhoneLibrary.csproj" Description="Проект успешно преобразован">
+</Event><Event ErrorLevel="3" Project="ParsePhoneLibrary" Source="ParsePhoneClassLibrary\ParsePhoneLibrary.csproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="" Source="ParsePhoneClassLibrary.sln" Description="Преобразование решения успешно завершено">
+</Event><Event ErrorLevel="3" Project="" Source="ParsePhoneClassLibrary.sln" Description="Converted">
+</Event><Event ErrorLevel="0" Project="ParsePhoneLibrary" Source="ParsePhoneClassLibrary\ParsePhoneLibrary.csproj" Description="Сканирование завершено: обновление для файлов проекта не требуется.">
+</Event></UpgradeLog>

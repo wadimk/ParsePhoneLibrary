@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParsePhoneLibrary", "ParsePhoneClassLibrary\ParsePhoneLibrary.csproj", "{234190CC-6724-4205-B7F0-7934D47150BB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{234190CC-6724-4205-B7F0-7934D47150BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{234190CC-6724-4205-B7F0-7934D47150BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{234190CC-6724-4205-B7F0-7934D47150BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{234190CC-6724-4205-B7F0-7934D47150BB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
