@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Collections;
 
-namespace ParsePhoneLibrary
+namespace PhoneParser
 {
     public class mobilePhone
     {
