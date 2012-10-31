@@ -97,7 +97,7 @@ namespace PhoneParser
             if (phone.Length == 0) 
             {
                 return "";
-            }
+            }o
 
             // очистка от лишнего мусора с сохранением информации о "плюсе" в начале номера
             phone = phone.Trim();
