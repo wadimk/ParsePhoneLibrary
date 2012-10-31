@@ -14,6 +14,9 @@ namespace EditPhoneCode
     {
         phone p;
 
+        private BindingList<Country> countrieslist;
+        private int iCount;
+
         public Form1()
         {
             InitializeComponent();
@@ -22,17 +25,52 @@ namespace EditPhoneCode
         private void Form1_Load(object sender, EventArgs e)
         {
             p = new phone();
-            this.countriesCount.Text = p.countries.Count().ToString();
+
         }
 
-        private void button1_Click(object sender, EventArgs e)
+
+        private void bindGrid()
+        {
+            this.countriesDataGrid.AutoGenerateColumns = false;
+            
+            //create the column programatically
+            DataGridViewCell cell = new DataGridViewTextBoxCell();
+            DataGridViewTextBoxColumn colCountry = new DataGridViewTextBoxColumn()
+            {
+                CellTemplate = cell, 
+                Name = "Name",
+                HeaderText = "Country Name",
+                DataPropertyName = "Name" // Tell the column which property of FileName it should use
+            };
+            countriesDataGrid.Columns.Add(colCountry);
+
+
+            DataGridViewTextBoxColumn colCode = new DataGridViewTextBoxColumn()
+            {
+                CellTemplate = cell,
+                Name = "Code",
+                HeaderText = "Country Code",
+                DataPropertyName = "Code" // Tell the column which property of FileName it should use
+            };
+            countriesDataGrid.Columns.Add(colCode);
+
+            var list = p.countries.ToList();
+            var filenamesList = new BindingList<Country>(list); // <-- BindingList
+
+            //Bind BindingList directly to the DataGrid, no need of BindingSource
+            countriesDataGrid.DataSource = filenamesList;
+        }
+
+        private void loadButton_Click(object sender, EventArgs e)
+        {
+            p.loadfromxml();
+            this.countriesCount.Text = p.countries.Count().ToString();
+            bindGrid();
+        }
+
+        private void saveButton_Click(object sender, EventArgs e)
         {
             p.savetoxml();
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-
         }
 
 
