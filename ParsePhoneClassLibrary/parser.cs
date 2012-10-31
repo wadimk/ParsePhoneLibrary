@@ -4,6 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Collections;
+using System.Xml;
+using System.IO;
+using System.Xml.Serialization;
 
 namespace PhoneParser
 {
@@ -39,18 +42,8 @@ namespace PhoneParser
 
     public class Country
     {
-        protected string name;
-        public string Name
-        {
-            get { return name; }
-        }
-
-        protected int code;
-        public int Code
-        {
-            get { return code; }
-        }
-
+        public string name;
+        public int code;
         public int cityCodeLength;
         public bool zeroHack;
 
@@ -58,6 +51,10 @@ namespace PhoneParser
 
         public int exceptions_max;
         public int exceptions_min;
+
+        public Country()
+        { 
+        }
 
         public Country(string name, int code)
         {
@@ -68,18 +65,16 @@ namespace PhoneParser
 
     public class phone
     {
+        public List<Country> countries; 
+        Country[] phoneCodes = new Country[235];
 
-
-        public static string convert(string phone)
+        public phone()
         {
-            return convert(phone, true, true);
-        }
-
-        public static string convert(string phone, bool convert, bool trim)
-        {
-            Country[] phoneCodes = new Country[233];
-
-            phoneCodes[231] = new Country("Switzerland", 41);
+            countries = loadfromxml();
+            //  new List<Country>();
+            phoneCodes[231] = new Country();
+            phoneCodes[231].name = "Switzerland";
+            phoneCodes[231].code = 41;
             phoneCodes[231].cityCodeLength = 2;
             phoneCodes[231].zeroHack = false;
             phoneCodes[231].exceptions = new int[] { 1 };
@@ -222,7 +217,7 @@ namespace PhoneParser
             phoneCodes[208].cityCodeLength = 0;
             phoneCodes[208].zeroHack = false;
             phoneCodes[208].exceptions_max = 0;
-            phoneCodes[208].exceptions_min = 0;;
+            phoneCodes[208].exceptions_min = 0; ;
 
             phoneCodes[207] = new Country("AntiguaAndBarbuda", 1268);
             phoneCodes[207].cityCodeLength = 0;
@@ -245,14 +240,14 @@ namespace PhoneParser
             phoneCodes[204] = new Country("Uzbekistan", 998);
             phoneCodes[204].cityCodeLength = 4;
             phoneCodes[204].zeroHack = false;
-            phoneCodes[204].exceptions = new int [] { 71, 74,65,67, 72, 75, 79, 69, 61, 66,76,62,73,677,673 };
+            phoneCodes[204].exceptions = new int[] { 71, 74, 65, 67, 72, 75, 79, 69, 61, 66, 76, 62, 73, 677, 673 };
             phoneCodes[204].exceptions_max = 3;
             phoneCodes[204].exceptions_min = 2;
 
             phoneCodes[203] = new Country("Kyrgyzstan", 996);
             phoneCodes[203].cityCodeLength = 4;
             phoneCodes[203].zeroHack = false;
-            phoneCodes[203].exceptions = new int[] { 31 ,37,313,39,35,32,34 };
+            phoneCodes[203].exceptions = new int[] { 31, 37, 313, 39, 35, 32, 34 };
             phoneCodes[203].exceptions_max = 3;
             phoneCodes[203].exceptions_min = 2;
 
@@ -266,7 +261,7 @@ namespace PhoneParser
             phoneCodes[201] = new Country("Azerbaijan", 994);
             phoneCodes[201].cityCodeLength = 3;
             phoneCodes[201].zeroHack = false;
-            phoneCodes[201].exceptions = new int[] { 12,1445,1302 };
+            phoneCodes[201].exceptions = new int[] { 12, 1445, 1302 };
             phoneCodes[201].exceptions_max = 4;
             phoneCodes[201].exceptions_min = 2;
 
@@ -304,7 +299,7 @@ namespace PhoneParser
             phoneCodes[195] = new Country("Qatar", 974);
             phoneCodes[195].cityCodeLength = 0;
             phoneCodes[195].zeroHack = false;
-            phoneCodes[195].exceptions = new int[] {48,59,550,551,552,553,554,555,556,557,558,559,222,223,224,225,226,227 };
+            phoneCodes[195].exceptions = new int[] { 48, 59, 550, 551, 552, 553, 554, 555, 556, 557, 558, 559, 222, 223, 224, 225, 226, 227 };
             phoneCodes[195].exceptions_max = 3;
             phoneCodes[195].exceptions_min = 2;
 
@@ -317,7 +312,7 @@ namespace PhoneParser
             phoneCodes[193] = new Country("Israel", 972);
             phoneCodes[193].cityCodeLength = 1;
             phoneCodes[193].zeroHack = false;
-            phoneCodes[193].exceptions = new int[] { 50,51,5,53,58 };
+            phoneCodes[193].exceptions = new int[] { 50, 51, 5, 53, 58 };
             phoneCodes[193].exceptions_max = 2;
             phoneCodes[193].exceptions_min = 2;
 
@@ -362,7 +357,7 @@ namespace PhoneParser
             phoneCodes[186] = new Country("Iraq", 964);
             phoneCodes[186].cityCodeLength = 3;
             phoneCodes[186].zeroHack = false;
-            phoneCodes[186].exceptions = new int[] {1,43,49,25,62,36,32,50,23,60,42,33,24,37,53,21,30,66 };
+            phoneCodes[186].exceptions = new int[] { 1, 43, 49, 25, 62, 36, 32, 50, 23, 60, 42, 33, 24, 37, 53, 21, 30, 66 };
             phoneCodes[186].exceptions_max = 2;
             phoneCodes[186].exceptions_min = 1;
 
@@ -375,7 +370,7 @@ namespace PhoneParser
             phoneCodes[184] = new Country("Jordan", 962);
             phoneCodes[184].cityCodeLength = 1;
             phoneCodes[184].zeroHack = false;
-            phoneCodes[184].exceptions = new int[] { 59,79,73,74,17 };
+            phoneCodes[184].exceptions = new int[] { 59, 79, 73, 74, 17 };
             phoneCodes[184].exceptions_max = 2;
             phoneCodes[184].exceptions_min = 2;
 
@@ -394,14 +389,14 @@ namespace PhoneParser
             phoneCodes[181] = new Country("Taiwan", 886);
             phoneCodes[181].cityCodeLength = 1;
             phoneCodes[181].zeroHack = false;
-            phoneCodes[181].exceptions = new int[] { 89,90,91,92,93,96,60,70,94,95 };
+            phoneCodes[181].exceptions = new int[] { 89, 90, 91, 92, 93, 96, 60, 70, 94, 95 };
             phoneCodes[181].exceptions_max = 2;
             phoneCodes[181].exceptions_min = 2;
 
             phoneCodes[180] = new Country("Bangladesh", 880);
             phoneCodes[180].cityCodeLength = 3;
             phoneCodes[180].zeroHack = false;
-            phoneCodes[180].exceptions = new int[] {51,2,41,81,91,31 };
+            phoneCodes[180].exceptions = new int[] { 51, 2, 41, 81, 91, 31 };
             phoneCodes[180].exceptions_max = 2;
             phoneCodes[180].exceptions_min = 1;
 
@@ -415,7 +410,7 @@ namespace PhoneParser
             phoneCodes[178] = new Country("Cambodia", 855);
             phoneCodes[178].cityCodeLength = 2;
             phoneCodes[178].zeroHack = false;
-            phoneCodes[178].exceptions = new int[] {1881,1591,1720 };
+            phoneCodes[178].exceptions = new int[] { 1881, 1591, 1720 };
             phoneCodes[178].exceptions_max = 4;
             phoneCodes[178].exceptions_min = 4;
 
@@ -587,7 +582,7 @@ namespace PhoneParser
             phoneCodes[150] = new Country("Uruguay", 598);
             phoneCodes[150].cityCodeLength = 3;
             phoneCodes[150].zeroHack = false;
-            phoneCodes[150].exceptions = new int[] { 42,2 };
+            phoneCodes[150].exceptions = new int[] { 42, 2 };
             phoneCodes[150].exceptions_max = 2;
             phoneCodes[150].exceptions_min = 1;
 
@@ -600,14 +595,14 @@ namespace PhoneParser
             phoneCodes[148] = new Country("Martinique", 596);
             phoneCodes[148].cityCodeLength = 0;
             phoneCodes[148].zeroHack = false;
-            phoneCodes[148].exceptions = new int[] { 20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79 };
+            phoneCodes[148].exceptions = new int[] { 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79 };
             phoneCodes[148].exceptions_max = 2;
             phoneCodes[148].exceptions_min = 2;
 
             phoneCodes[147] = new Country("Paraguay", 595);
             phoneCodes[147].cityCodeLength = 2;
             phoneCodes[147].zeroHack = false;
-            phoneCodes[147].exceptions = new int[] { 541 , 521 };
+            phoneCodes[147].exceptions = new int[] { 541, 521 };
             phoneCodes[147].exceptions_max = 3;
             phoneCodes[147].exceptions_min = 3;
 
@@ -632,7 +627,7 @@ namespace PhoneParser
             phoneCodes[143] = new Country("Bolivia", 591);
             phoneCodes[143].cityCodeLength = 3;
             phoneCodes[143].zeroHack = false;
-            phoneCodes[143].exceptions = new int[] { 69,4,2,92,52,3,46 };
+            phoneCodes[143].exceptions = new int[] { 69, 4, 2, 92, 52, 3, 46 };
             phoneCodes[143].exceptions_max = 2;
             phoneCodes[143].exceptions_min = 1;
 
@@ -645,7 +640,7 @@ namespace PhoneParser
             phoneCodes[141] = new Country("Haiti", 509);
             phoneCodes[141].cityCodeLength = 1;
             phoneCodes[141].zeroHack = false;
-            phoneCodes[141].exceptions = new int[] { 330,420,510,851 };
+            phoneCodes[141].exceptions = new int[] { 330, 420, 510, 851 };
             phoneCodes[141].exceptions_max = 3;
             phoneCodes[141].exceptions_min = 3;
 
@@ -707,21 +702,21 @@ namespace PhoneParser
             phoneCodes[131] = new Country("SlovakRepublic", 421);
             phoneCodes[131].cityCodeLength = 3;
             phoneCodes[131].zeroHack = false;
-            phoneCodes[131].exceptions = new int[] { 7,89,95,92,91 };
+            phoneCodes[131].exceptions = new int[] { 7, 89, 95, 92, 91 };
             phoneCodes[131].exceptions_max = 2;
             phoneCodes[131].exceptions_min = 1;
 
             phoneCodes[130] = new Country("CzechRepublic", 420);
             phoneCodes[130].cityCodeLength = 3;
             phoneCodes[130].zeroHack = false;
-            phoneCodes[130].exceptions = new int[] {5,49,67,66,17,48,35,68,69,40,19,2,47,38 };
+            phoneCodes[130].exceptions = new int[] { 5, 49, 67, 66, 17, 48, 35, 68, 69, 40, 19, 2, 47, 38 };
             phoneCodes[130].exceptions_max = 2;
             phoneCodes[130].exceptions_min = 1;
 
             phoneCodes[129] = new Country("Macedonia", 389);
             phoneCodes[129].cityCodeLength = 2;
             phoneCodes[129].zeroHack = false;
-            phoneCodes[129].exceptions = new int[] { 903,901,902 };
+            phoneCodes[129].exceptions = new int[] { 903, 901, 902 };
             phoneCodes[129].exceptions_max = 3;
             phoneCodes[129].exceptions_min = 3;
 
@@ -734,7 +729,7 @@ namespace PhoneParser
             phoneCodes[127] = new Country("Slovenia", 386);
             phoneCodes[127].cityCodeLength = 2;
             phoneCodes[127].zeroHack = false;
-            phoneCodes[127].exceptions = new int[] { 608,602,601 };
+            phoneCodes[127].exceptions = new int[] { 608, 602, 601 };
             phoneCodes[127].exceptions_max = 3;
             phoneCodes[127].exceptions_min = 3;
 
@@ -755,7 +750,7 @@ namespace PhoneParser
             phoneCodes[124] = new Country("Ukraine", 380);
             phoneCodes[124].cityCodeLength = 4;
             phoneCodes[124].zeroHack = true;
-            phoneCodes[124].exceptions = new int[] { 44,432,1762,562,622,412,522,564,53615,642,322,448,629,512,482,532,3355,1821,403,222,1852,356,3371,267,3443,1694,1965,3058,1627,3385,3356,2718,3370,3260,3231,2785,309,2857,2957,2911,294,1705,3,295,3250,3387,2523,3246,2674,1854,3433,1711,251,2958,2477,2984,307,542,352,572,552,382,472,462,654 };
+            phoneCodes[124].exceptions = new int[] { 44, 432, 1762, 562, 622, 412, 522, 564, 53615, 642, 322, 448, 629, 512, 482, 532, 3355, 1821, 403, 222, 1852, 356, 3371, 267, 3443, 1694, 1965, 3058, 1627, 3385, 3356, 2718, 3370, 3260, 3231, 2785, 309, 2857, 2957, 2911, 294, 1705, 3, 295, 3250, 3387, 2523, 3246, 2674, 1854, 3433, 1711, 251, 2958, 2477, 2984, 307, 542, 352, 572, 552, 382, 472, 462, 654 };
             phoneCodes[124].exceptions_max = 5;
             phoneCodes[124].exceptions_min = 1;
 
@@ -780,14 +775,14 @@ namespace PhoneParser
             phoneCodes[120] = new Country("Belarus", 375);
             phoneCodes[120].cityCodeLength = 4;
             phoneCodes[120].zeroHack = false;
-            phoneCodes[120].exceptions = new int[] { 17,163,162,232,222 };
+            phoneCodes[120].exceptions = new int[] { 17, 163, 162, 232, 222 };
             phoneCodes[120].exceptions_max = 3;
             phoneCodes[120].exceptions_min = 2;
 
             phoneCodes[119] = new Country("Armenia", 374);
             phoneCodes[119].cityCodeLength = 2;
             phoneCodes[119].zeroHack = false;
-            phoneCodes[119].exceptions = new int[] { 1,460,520,4300,680,860,830,550,490,570 };
+            phoneCodes[119].exceptions = new int[] { 1, 460, 520, 4300, 680, 860, 830, 550, 490, 570 };
             phoneCodes[119].exceptions_max = 4;
             phoneCodes[119].exceptions_min = 1;
 
@@ -801,7 +796,7 @@ namespace PhoneParser
             phoneCodes[117] = new Country("Estonia", 372);
             phoneCodes[117].cityCodeLength = 2;
             phoneCodes[117].zeroHack = false;
-            phoneCodes[117].exceptions = new int [] { 2,7 };
+            phoneCodes[117].exceptions = new int[] { 2, 7 };
             phoneCodes[117].exceptions_max = 1;
             phoneCodes[117].exceptions_min = 1;
 
@@ -814,28 +809,28 @@ namespace PhoneParser
             phoneCodes[115] = new Country("Lithuania", 370);
             phoneCodes[115].cityCodeLength = 3;
             phoneCodes[115].zeroHack = false;
-            phoneCodes[115].exceptions = new int[] { 5,37,46,45,41 };
+            phoneCodes[115].exceptions = new int[] { 5, 37, 46, 45, 41 };
             phoneCodes[115].exceptions_max = 2;
             phoneCodes[115].exceptions_min = 1;
 
             phoneCodes[114] = new Country("Bulgaria", 359);
             phoneCodes[114].cityCodeLength = 3;
             phoneCodes[114].zeroHack = false;
-            phoneCodes[114].exceptions = new int[] { 2,56,62,94,92,52,32,76,64,84,82,44,42,38,46,5722,73,66,58,68,34,86,54,6071,7443,5152,7112,7128,9744,9527,5731,8141,3041,6514,6151,3071,9131,7142,3145,8362,3751,6191,9171,2031,7181,6141,7133,5561,3542,3151,3561,7481,3181,5514,3134,6161,4761,5751,3051 };
+            phoneCodes[114].exceptions = new int[] { 2, 56, 62, 94, 92, 52, 32, 76, 64, 84, 82, 44, 42, 38, 46, 5722, 73, 66, 58, 68, 34, 86, 54, 6071, 7443, 5152, 7112, 7128, 9744, 9527, 5731, 8141, 3041, 6514, 6151, 3071, 9131, 7142, 3145, 8362, 3751, 6191, 9171, 2031, 7181, 6141, 7133, 5561, 3542, 3151, 3561, 7481, 3181, 5514, 3134, 6161, 4761, 5751, 3051 };
             phoneCodes[114].exceptions_max = 4;
             phoneCodes[114].exceptions_min = 1;
 
             phoneCodes[113] = new Country("Finland", 358);
             phoneCodes[113].cityCodeLength = 2;
             phoneCodes[113].zeroHack = false;
-            phoneCodes[113].exceptions = new int[] { 6,5,2,8,9,3 };
+            phoneCodes[113].exceptions = new int[] { 6, 5, 2, 8, 9, 3 };
             phoneCodes[113].exceptions_max = 1;
             phoneCodes[113].exceptions_min = 1;
 
             phoneCodes[112] = new Country("Cyprus", 357);
             phoneCodes[112].cityCodeLength = 2;
             phoneCodes[112].zeroHack = false;
-            phoneCodes[112].exceptions = new int[] { 2,3,91,92,93,94,95,96,98 };
+            phoneCodes[112].exceptions = new int[] { 2, 3, 91, 92, 93, 94, 95, 96, 98 };
             phoneCodes[112].exceptions_max = 2;
             phoneCodes[112].exceptions_min = 1;
 
@@ -848,7 +843,7 @@ namespace PhoneParser
             phoneCodes[110] = new Country("Albania", 355);
             phoneCodes[110].cityCodeLength = 3;
             phoneCodes[110].zeroHack = false;
-            phoneCodes[110].exceptions = new int[] { 65,62,52,64,82,7426,42,63 };
+            phoneCodes[110].exceptions = new int[] { 65, 62, 52, 64, 82, 7426, 42, 63 };
             phoneCodes[110].exceptions_max = 4;
             phoneCodes[110].exceptions_min = 2;
 
@@ -861,7 +856,7 @@ namespace PhoneParser
             phoneCodes[108] = new Country("IrishRepublic", 353);
             phoneCodes[108].cityCodeLength = 2;
             phoneCodes[108].zeroHack = false;
-            phoneCodes[108].exceptions = new int[] { 1,402,507,902,905,509,502,903,506,504,404,405 };
+            phoneCodes[108].exceptions = new int[] { 1, 402, 507, 902, 905, 509, 502, 903, 506, 504, 404, 405 };
             phoneCodes[108].exceptions_max = 3;
             phoneCodes[108].exceptions_min = 1;
 
@@ -874,7 +869,7 @@ namespace PhoneParser
             phoneCodes[106] = new Country("Azores", 351);
             phoneCodes[106].cityCodeLength = 2;
             phoneCodes[106].zeroHack = false;
-            phoneCodes[106].exceptions = new int[] { 1,2,96,676,765,96765 };
+            phoneCodes[106].exceptions = new int[] { 1, 2, 96, 676, 765, 96765 };
             phoneCodes[106].exceptions_max = 5;
             phoneCodes[106].exceptions_min = 1;
 
@@ -950,14 +945,14 @@ namespace PhoneParser
             phoneCodes[94] = new Country("Namibia", 264);
             phoneCodes[94].cityCodeLength = 2;
             phoneCodes[94].zeroHack = false;
-            phoneCodes[94].exceptions = new int[] { 811,812,813 };
+            phoneCodes[94].exceptions = new int[] { 811, 812, 813 };
             phoneCodes[94].exceptions_max = 3;
             phoneCodes[94].exceptions_min = 3;
 
             phoneCodes[93] = new Country("Zimbabwe", 263);
             phoneCodes[93].cityCodeLength = 2;
             phoneCodes[93].zeroHack = false;
-            phoneCodes[93].exceptions = new int[] { 9,4,637,718 };
+            phoneCodes[93].exceptions = new int[] { 9, 4, 637, 718 };
             phoneCodes[93].exceptions_max = 3;
             phoneCodes[93].exceptions_min = 1;
 
@@ -1002,7 +997,7 @@ namespace PhoneParser
             phoneCodes[86] = new Country("Uganda", 256);
             phoneCodes[86].cityCodeLength = 2;
             phoneCodes[86].zeroHack = false;
-            phoneCodes[86].exceptions = new int[] { 481,485,493 };
+            phoneCodes[86].exceptions = new int[] { 481, 485, 493 };
             phoneCodes[86].exceptions_max = 3;
             phoneCodes[86].exceptions_min = 3;
 
@@ -1015,7 +1010,7 @@ namespace PhoneParser
             phoneCodes[84] = new Country("Kenya", 254);
             phoneCodes[84].cityCodeLength = 3;
             phoneCodes[84].zeroHack = false;
-            phoneCodes[84].exceptions = new int[] { 11,2,37 };
+            phoneCodes[84].exceptions = new int[] { 11, 2, 37 };
             phoneCodes[84].exceptions_max = 2;
             phoneCodes[84].exceptions_min = 1;
 
@@ -1046,7 +1041,7 @@ namespace PhoneParser
             phoneCodes[79] = new Country("Sudan", 249);
             phoneCodes[79].cityCodeLength = 3;
             phoneCodes[79].zeroHack = false;
-            phoneCodes[79].exceptions = new int[] { 21,51,41,31,61,11 };
+            phoneCodes[79].exceptions = new int[] { 21, 51, 41, 31, 61, 11 };
             phoneCodes[79].exceptions_max = 2;
             phoneCodes[79].exceptions_min = 2;
 
@@ -1140,7 +1135,7 @@ namespace PhoneParser
             phoneCodes[64] = new Country("Nigeria", 234);
             phoneCodes[64].cityCodeLength = 2;
             phoneCodes[64].zeroHack = false;
-            phoneCodes[64].exceptions = new int[] { 1,2 };
+            phoneCodes[64].exceptions = new int[] { 1, 2 };
             phoneCodes[64].exceptions_max = 1;
             phoneCodes[64].exceptions_min = 1;
 
@@ -1220,7 +1215,7 @@ namespace PhoneParser
             phoneCodes[51] = new Country("Senegal", 221);
             phoneCodes[51].cityCodeLength = 3;
             phoneCodes[51].zeroHack = false;
-            phoneCodes[51].exceptions = new int[] { 63,64,67,68,82,83,84,85,86,87,90,93,94,95,96,97,98,99 };
+            phoneCodes[51].exceptions = new int[] { 63, 64, 67, 68, 82, 83, 84, 85, 86, 87, 90, 93, 94, 95, 96, 97, 98, 99 };
             phoneCodes[51].exceptions_max = 2;
             phoneCodes[51].exceptions_min = 2;
 
@@ -1251,21 +1246,21 @@ namespace PhoneParser
             phoneCodes[46] = new Country("Iran", 98);
             phoneCodes[46].cityCodeLength = 3;
             phoneCodes[46].zeroHack = false;
-            phoneCodes[46].exceptions = new int[] { 61,11,31,51,41,21,81,71 };
+            phoneCodes[46].exceptions = new int[] { 61, 11, 31, 51, 41, 21, 81, 71 };
             phoneCodes[46].exceptions_max = 2;
             phoneCodes[46].exceptions_min = 2;
 
             phoneCodes[45] = new Country("Myanmar", 95);
             phoneCodes[45].cityCodeLength = 2;
             phoneCodes[45].zeroHack = false;
-            phoneCodes[45].exceptions = new int[] { 1,2 };
+            phoneCodes[45].exceptions = new int[] { 1, 2 };
             phoneCodes[45].exceptions_max = 1;
             phoneCodes[45].exceptions_min = 1;
 
             phoneCodes[44] = new Country("SriLanka", 94);
             phoneCodes[44].cityCodeLength = 2;
             phoneCodes[44].zeroHack = false;
-            phoneCodes[44].exceptions = new int[] { 1,9,8 };
+            phoneCodes[44].exceptions = new int[] { 1, 9, 8 };
             phoneCodes[44].exceptions_max = 1;
             phoneCodes[44].exceptions_min = 1;
 
@@ -1278,14 +1273,14 @@ namespace PhoneParser
             phoneCodes[42] = new Country("Pakistan", 92);
             phoneCodes[42].cityCodeLength = 3;
             phoneCodes[42].zeroHack = false;
-            phoneCodes[42].exceptions = new int[] { 8288,4521,4331,51,21,42,61,91,71 };
+            phoneCodes[42].exceptions = new int[] { 8288, 4521, 4331, 51, 21, 42, 61, 91, 71 };
             phoneCodes[42].exceptions_max = 4;
             phoneCodes[42].exceptions_min = 2;
 
             phoneCodes[41] = new Country("India", 91);
             phoneCodes[41].cityCodeLength = 3;
             phoneCodes[41].zeroHack = false;
-            phoneCodes[41].exceptions = new int[] { 11,22,33,44,40 };
+            phoneCodes[41].exceptions = new int[] { 11, 22, 33, 44, 40 };
             phoneCodes[41].exceptions_max = 2;
             phoneCodes[41].exceptions_min = 2;
 
@@ -1298,28 +1293,28 @@ namespace PhoneParser
             phoneCodes[39] = new Country("China", 86);
             phoneCodes[39].cityCodeLength = 3;
             phoneCodes[39].zeroHack = false;
-            phoneCodes[39].exceptions = new int[] { 20,29,10,22,27,28,21,24,1350,1351,1352,1353,1354,1355,1356,1357,1358,1359,1360,1361,1362,1363,1364,1365,1366,1367,1368,1369,1370,1371,1372,1373,1374,1375,1376,1377,1378,1379,1380,1381,1382,1383,1384,1385,1386,1387,1388,1389,1390 };
+            phoneCodes[39].exceptions = new int[] { 20, 29, 10, 22, 27, 28, 21, 24, 1350, 1351, 1352, 1353, 1354, 1355, 1356, 1357, 1358, 1359, 1360, 1361, 1362, 1363, 1364, 1365, 1366, 1367, 1368, 1369, 1370, 1371, 1372, 1373, 1374, 1375, 1376, 1377, 1378, 1379, 1380, 1381, 1382, 1383, 1384, 1385, 1386, 1387, 1388, 1389, 1390 };
             phoneCodes[39].exceptions_max = 4;
             phoneCodes[39].exceptions_min = 2;
 
             phoneCodes[38] = new Country("Vietnam", 84);
             phoneCodes[38].cityCodeLength = 2;
             phoneCodes[38].zeroHack = false;
-            phoneCodes[38].exceptions = new int[] { 511,350,4,8 };
+            phoneCodes[38].exceptions = new int[] { 511, 350, 4, 8 };
             phoneCodes[38].exceptions_max = 3;
             phoneCodes[38].exceptions_min = 1;
 
             phoneCodes[37] = new Country("Korea,Republic", 82);
             phoneCodes[37].cityCodeLength = 3;
             phoneCodes[37].zeroHack = false;
-            phoneCodes[37].exceptions = new int[] { 32,62,51,2,53,42,64,16,17,18,19 };
+            phoneCodes[37].exceptions = new int[] { 32, 62, 51, 2, 53, 42, 64, 16, 17, 18, 19 };
             phoneCodes[37].exceptions_max = 2;
             phoneCodes[37].exceptions_min = 1;
 
             phoneCodes[36] = new Country("Japan", 81);
             phoneCodes[36].cityCodeLength = 3;
             phoneCodes[36].zeroHack = false;
-            phoneCodes[36].exceptions = new int[] { 78,45,44,75,93,52,25,6,11,22,54,3,48,92,53,82,1070,3070,4070 };
+            phoneCodes[36].exceptions = new int[] { 78, 45, 44, 75, 93, 52, 25, 6, 11, 22, 54, 3, 48, 92, 53, 82, 1070, 3070, 4070 };
             phoneCodes[36].exceptions_max = 4;
             phoneCodes[36].exceptions_min = 1;
 
@@ -1339,35 +1334,35 @@ namespace PhoneParser
             phoneCodes[33] = new Country("NewZealand", 64);
             phoneCodes[33].cityCodeLength = 1;
             phoneCodes[33].zeroHack = false;
-            phoneCodes[33].exceptions = new int[] { 20,21,25,26,29 };
+            phoneCodes[33].exceptions = new int[] { 20, 21, 25, 26, 29 };
             phoneCodes[33].exceptions_max = 2;
             phoneCodes[33].exceptions_min = 2;
 
             phoneCodes[32] = new Country("Philippines", 63);
             phoneCodes[32].cityCodeLength = 2;
             phoneCodes[32].zeroHack = false;
-            phoneCodes[32].exceptions = new int[] { 455,4661,2150,2155,452,2 };
+            phoneCodes[32].exceptions = new int[] { 455, 4661, 2150, 2155, 452, 2 };
             phoneCodes[32].exceptions_max = 4;
             phoneCodes[32].exceptions_min = 1;
 
             phoneCodes[31] = new Country("Indonesia", 62);
             phoneCodes[31].cityCodeLength = 3;
             phoneCodes[31].zeroHack = false;
-            phoneCodes[31].exceptions = new int[] { 22,61,21,33,36,39,35,34,24,31,81,82 };
+            phoneCodes[31].exceptions = new int[] { 22, 61, 21, 33, 36, 39, 35, 34, 24, 31, 81, 82 };
             phoneCodes[31].exceptions_max = 2;
             phoneCodes[31].exceptions_min = 2;
 
             phoneCodes[30] = new Country("Australia", 61);
             phoneCodes[30].cityCodeLength = 1;
             phoneCodes[30].zeroHack = false;
-            phoneCodes[30].exceptions = new int[] { 14,15,16,17,18,19,41 };
+            phoneCodes[30].exceptions = new int[] { 14, 15, 16, 17, 18, 19, 41 };
             phoneCodes[30].exceptions_max = 2;
             phoneCodes[30].exceptions_min = 2;
 
             phoneCodes[29] = new Country("Malaysia", 60);
             phoneCodes[29].cityCodeLength = 1;
             phoneCodes[29].zeroHack = false;
-            phoneCodes[29].exceptions = new int[] { 86,88,82,85,10,18 };
+            phoneCodes[29].exceptions = new int[] { 86, 88, 82, 85, 10, 18 };
             phoneCodes[29].exceptions_max = 2;
             phoneCodes[29].exceptions_min = 2;
 
@@ -1381,7 +1376,7 @@ namespace PhoneParser
             phoneCodes[27] = new Country("Colombia", 57);
             phoneCodes[27].cityCodeLength = 2;
             phoneCodes[27].zeroHack = false;
-            phoneCodes[27].exceptions = new int[] { 1,5,7,2,4,816 };
+            phoneCodes[27].exceptions = new int[] { 1, 5, 7, 2, 4, 816 };
             phoneCodes[27].exceptions_max = 3;
             phoneCodes[27].exceptions_min = 1;
 
@@ -1395,98 +1390,98 @@ namespace PhoneParser
             phoneCodes[25] = new Country("Brazil", 55);
             phoneCodes[25].cityCodeLength = 2;
             phoneCodes[25].zeroHack = false;
-            phoneCodes[25].exceptions = new int[] { 243,187,485,186,246,533,173,142,473,125,495,138,482,424,192,247,484,144,442,532,242,245,194,182,123,474,486 };
+            phoneCodes[25].exceptions = new int[] { 243, 187, 485, 186, 246, 533, 173, 142, 473, 125, 495, 138, 482, 424, 192, 247, 484, 144, 442, 532, 242, 245, 194, 182, 123, 474, 486 };
             phoneCodes[25].exceptions_max = 3;
             phoneCodes[25].exceptions_min = 3;
 
             phoneCodes[24] = new Country("Argentina", 54);
             phoneCodes[24].cityCodeLength = 4;
             phoneCodes[24].zeroHack = false;
-            phoneCodes[24].exceptions = new int[] { 291,11,297,223,261,299,358,341,387,381,342 };
+            phoneCodes[24].exceptions = new int[] { 291, 11, 297, 223, 261, 299, 358, 341, 387, 381, 342 };
             phoneCodes[24].exceptions_max = 3;
             phoneCodes[24].exceptions_min = 2;
 
             phoneCodes[23] = new Country("Cuba", 53);
             phoneCodes[23].cityCodeLength = 2;
             phoneCodes[23].zeroHack = false;
-            phoneCodes[23].exceptions = new int[] { 680,5,8,7,686,322,419,433,335,422,692,516,226 };
+            phoneCodes[23].exceptions = new int[] { 680, 5, 8, 7, 686, 322, 419, 433, 335, 422, 692, 516, 226 };
             phoneCodes[23].exceptions_max = 3;
             phoneCodes[23].exceptions_min = 1;
 
             phoneCodes[22] = new Country("Mexico", 52);
             phoneCodes[22].cityCodeLength = 2;
             phoneCodes[22].zeroHack = false;
-            phoneCodes[22].exceptions = new int[] { 473,181,981,112,331,5,8,951,771,492,131,246,961,459,747 };
+            phoneCodes[22].exceptions = new int[] { 473, 181, 981, 112, 331, 5, 8, 951, 771, 492, 131, 246, 961, 459, 747 };
             phoneCodes[22].exceptions_max = 3;
             phoneCodes[22].exceptions_min = 1;
 
             phoneCodes[21] = new Country("Peru", 51);
             phoneCodes[21].cityCodeLength = 2;
             phoneCodes[21].zeroHack = false;
-            phoneCodes[21].exceptions = new int[] { 1,194,198,193,190,1877,1878,1879 };
+            phoneCodes[21].exceptions = new int[] { 1, 194, 198, 193, 190, 1877, 1878, 1879 };
             phoneCodes[21].exceptions_max = 4;
             phoneCodes[21].exceptions_min = 1;
 
             phoneCodes[20] = new Country("Germany", 49);
             phoneCodes[20].cityCodeLength = 4;
             phoneCodes[20].zeroHack = false;
-            phoneCodes[20].exceptions = new int[] { 651,241,711,981,821,30,971,671,921,951,521,228,234,531,421,471,961,281,611,365,40,511,209,551,641,34202,340,351,991,771,906,231,203,211,271,911,212,841,631,721,561,221,831,261,341,871,491,591,451,621,391,291,89,395,5021,571,441,781,208,541,69,331,851,34901,381,33638,751,681,861,581,731,335,741,461,761,661,345,481,34203,375,385,34204,361,201,33608,161,171,172,173,177,178,179 };
+            phoneCodes[20].exceptions = new int[] { 651, 241, 711, 981, 821, 30, 971, 671, 921, 951, 521, 228, 234, 531, 421, 471, 961, 281, 611, 365, 40, 511, 209, 551, 641, 34202, 340, 351, 991, 771, 906, 231, 203, 211, 271, 911, 212, 841, 631, 721, 561, 221, 831, 261, 341, 871, 491, 591, 451, 621, 391, 291, 89, 395, 5021, 571, 441, 781, 208, 541, 69, 331, 851, 34901, 381, 33638, 751, 681, 861, 581, 731, 335, 741, 461, 761, 661, 345, 481, 34203, 375, 385, 34204, 361, 201, 33608, 161, 171, 172, 173, 177, 178, 179 };
             phoneCodes[20].exceptions_max = 5;
             phoneCodes[20].exceptions_min = 2;
 
             phoneCodes[19] = new Country("Poland", 48);
             phoneCodes[19].cityCodeLength = 2;
             phoneCodes[19].zeroHack = false;
-            phoneCodes[19].exceptions = new int[] { 192,795,862,131,135,836,115,604,641,417,601,602,603,605,606,501,885 };
+            phoneCodes[19].exceptions = new int[] { 192, 795, 862, 131, 135, 836, 115, 604, 641, 417, 601, 602, 603, 605, 606, 501, 885 };
             phoneCodes[19].exceptions_max = 3;
             phoneCodes[19].exceptions_min = 3;
 
             phoneCodes[18] = new Country("Norway", 47);
             phoneCodes[18].cityCodeLength = 1;
             phoneCodes[18].zeroHack = false;
-            phoneCodes[18].exceptions = new int[] { 43,83,62 };
+            phoneCodes[18].exceptions = new int[] { 43, 83, 62 };
             phoneCodes[18].exceptions_max = 2;
             phoneCodes[18].exceptions_min = 2;
 
             phoneCodes[17] = new Country("Sweden", 46);
             phoneCodes[17].cityCodeLength = 3;
             phoneCodes[17].zeroHack = false;
-            phoneCodes[17].exceptions = new int[] { 33,21,31,54,44,13,46,40,19,63,8,60,90,18,42 };
+            phoneCodes[17].exceptions = new int[] { 33, 21, 31, 54, 44, 13, 46, 40, 19, 63, 8, 60, 90, 18, 42 };
             phoneCodes[17].exceptions_max = 2;
             phoneCodes[17].exceptions_min = 1;
 
             phoneCodes[16] = new Country("Denmark", 45);
             phoneCodes[16].cityCodeLength = 2;
             phoneCodes[16].zeroHack = false;
-            phoneCodes[16].exceptions = new int[] { 9,6,7,8,1,5,3,4,251,243,249,276,70777,80827,90107,90207,90417,90517 };
+            phoneCodes[16].exceptions = new int[] { 9, 6, 7, 8, 1, 5, 3, 4, 251, 243, 249, 276, 70777, 80827, 90107, 90207, 90417, 90517 };
             phoneCodes[16].exceptions_max = 5;
             phoneCodes[16].exceptions_min = 1;
 
             phoneCodes[15] = new Country("UnitedKingdom", 44);
             phoneCodes[15].cityCodeLength = 4;
             phoneCodes[15].zeroHack = false;
-            phoneCodes[15].exceptions = new int[] { 21,91,44,41,51,61,31,121,117,141,185674,18383,15932,116,151,113,171,181,161,207,208,158681,115,191,177681,114,131,18645 };
+            phoneCodes[15].exceptions = new int[] { 21, 91, 44, 41, 51, 61, 31, 121, 117, 141, 185674, 18383, 15932, 116, 151, 113, 171, 181, 161, 207, 208, 158681, 115, 191, 177681, 114, 131, 18645 };
             phoneCodes[15].exceptions_max = 6;
             phoneCodes[15].exceptions_min = 2;
 
             phoneCodes[14] = new Country("Austria", 43);
             phoneCodes[14].cityCodeLength = 4;
             phoneCodes[14].zeroHack = false;
-            phoneCodes[14].exceptions = new int[] { 1,662,732,316,512,463 };
+            phoneCodes[14].exceptions = new int[] { 1, 662, 732, 316, 512, 463 };
             phoneCodes[14].exceptions_max = 3;
             phoneCodes[14].exceptions_min = 1;
 
             phoneCodes[13] = new Country("Romania", 40);
             phoneCodes[13].cityCodeLength = 2;
             phoneCodes[13].zeroHack = false;
-            phoneCodes[13].exceptions = new int[] { 1,941,916,981 };
+            phoneCodes[13].exceptions = new int[] { 1, 941, 916, 981 };
             phoneCodes[13].exceptions_max = 3;
             phoneCodes[13].exceptions_min = 1;
 
             phoneCodes[12] = new Country("Italy", 39);
             phoneCodes[12].cityCodeLength = 3;
             phoneCodes[12].zeroHack = true;
-            phoneCodes[12].exceptions = new int[] { 71,80,35,51,30,15,41,45,33,70,74,95,31,90,2,59,39,81,49,75,85,50,6,19,79,55,330,333,335,339,360,347,348,349 };
+            phoneCodes[12].exceptions = new int[] { 71, 80, 35, 51, 30, 15, 41, 45, 33, 70, 74, 95, 31, 90, 2, 59, 39, 81, 49, 75, 85, 50, 6, 19, 79, 55, 330, 333, 335, 339, 360, 347, 348, 349 };
             phoneCodes[12].exceptions_min = 1;
             phoneCodes[12].exceptions_max = 3;
 
@@ -1500,7 +1495,7 @@ namespace PhoneParser
             phoneCodes[10] = new Country("Spain", 34);
             phoneCodes[10].cityCodeLength = 3;
             phoneCodes[10].zeroHack = false;
-            phoneCodes[10].exceptions = new int[] { 4,6,3,5,96,93,94,91,95,98 };
+            phoneCodes[10].exceptions = new int[] { 4, 6, 3, 5, 96, 93, 94, 91, 95, 98 };
             phoneCodes[10].exceptions_max = 2;
             phoneCodes[10].exceptions_min = 1;
 
@@ -1559,18 +1554,27 @@ namespace PhoneParser
             phoneCodes[2].exceptions_max = 8;
             phoneCodes[2].exceptions_min = 2;
 
-            phoneCodes[1] = new Country("Russia", 7);
-            phoneCodes[1].cityCodeLength = 5;
-            phoneCodes[1].zeroHack = false;
-            phoneCodes[1].exceptions = new int[] { 4162, 416332, 8512, 851111, 4722, 4725, 391379, 8442, 4732, 4152, 4154451, 4154459, 4154455, 41544513, 8142, 8332, 8612, 8622, 3525, 812, 8342, 8152, 3812, 4862, 3422, 342633, 8112, 9142, 8452, 3432, 3434, 3435, 4812, 3919, 8432, 8439, 3822, 4872, 3412, 3511, 3512, 3022, 4112, 4852, 4855, 3852, 3854, 8182, 818, 90, 3472, 4741, 4764, 4832, 4922, 8172, 8202, 8722, 4932, 493, 3952, 3951, 3953, 411533, 4842, 3842, 3843, 8212, 4942, 3912, 4712, 4742, 8362, 495, 499, 4966, 4964, 4967, 498, 8312, 8313, 3832, 383612, 3532, 8412, 4232, 423370, 423630, 8632, 8642, 8482, 4242, 8672, 8652, 4752, 4822, 482502, 4826300, 3452, 8422, 4212, 3466, 3462, 8712, 8352, 997, 901, 902, 903, 904, 905, 906, 908, 909, 910, 911, 912, 913, 914, 915, 916, 917, 918, 919, 920, 921, 922, 923, 924, 925, 926, 927, 928, 929, 930, 931, 932, 933, 934, 936, 937, 938, 950, 951, 952, 953, 960, 961, 962, 963, 964, 965, 967, 968, 980, 981, 982, 983, 984, 985, 987, 988, 989 };
-            phoneCodes[1].exceptions_max = 8;
-            phoneCodes[1].exceptions_min = 2;
-
             phoneCodes[0] = new Country("USA", 1);
             phoneCodes[0].cityCodeLength = 5;
             phoneCodes[0].zeroHack = false;
             phoneCodes[0].exceptions_max = 0;
             phoneCodes[0].exceptions_min = 0;
+
+            //foreach (Country country in phoneCodes)
+            //{
+            //    countries.Add(country);
+            //}
+
+
+        }
+
+        public string convert(string phone)
+        {
+            return convert(phone, true, true);
+        }
+
+        public string convert(string phone, bool convert, bool trim)
+        {
 
             if (phone.Length == 0) 
             {
@@ -1612,9 +1616,9 @@ namespace PhoneParser
             {
                 for (int i = 0; i < phoneCodes.Count(); i++)
                 {   
-                    int countryCode = phoneCodes[i].Code;
+                    int countryCode = phoneCodes[i].code;
                     int codeLen = countryCode.ToString().Length;
-                    if (phone.Substring(0, codeLen) == phoneCodes[i].Code.ToString())
+                    if (phone.Substring(0, codeLen) == phoneCodes[i].code.ToString())
                     {
                         // как только страна обнаружена, урезаем телефон до уровня кода города
                         phone = phone.Substring(codeLen, phone.Length-codeLen);
@@ -1658,6 +1662,30 @@ namespace PhoneParser
             }
 
             return (plus ? "+" : "") + phone;
+        }
+
+        public void savetoxml()
+        {
+            var xs = new XmlSerializer(typeof(List<Country>));
+            var xml = new StringWriter();
+
+            TextWriter WriteFileStream = new StreamWriter(Directory.GetCurrentDirectory()+"\\PhoneCodes.xml");
+            xs.Serialize(WriteFileStream, countries);
+
+            WriteFileStream.Close();
+        }
+
+        public List<Country> loadfromxml()
+        {
+            if (!File.Exists(Directory.GetCurrentDirectory() + "\\PhoneCodes.xml"))
+                throw new FileNotFoundException("PhoneCodes.xml");
+
+            using (var textReader = new StreamReader(Directory.GetCurrentDirectory() + "\\PhoneCodes.xml"))
+            {
+                var xmlSerializer = new XmlSerializer(typeof(List<Country>));
+                return (List<Country>)xmlSerializer.Deserialize(textReader);
+            }
+
         }
     }
 }
